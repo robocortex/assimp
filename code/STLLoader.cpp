@@ -484,15 +484,15 @@ bool STLImporter::LoadBinaryFile()
             clr->a = 1.0f;
             if (bIsMaterialise) // this is reversed
             {
-                clr->r = (color & 0x31u) / 31.0f;
-                clr->g = ((color & (0x31u<<5))>>5u) / 31.0f;
-                clr->b = ((color & (0x31u<<10))>>10u) / 31.0f;
+                clr->r = (color & 0x1Fu) / 31.0f;
+                clr->g = ((color & (0x1Fu << 5)) >> 5u) / 31.0f;
+                clr->b = ((color & (0x1Fu << 10)) >> 10u) / 31.0f;
             }
             else
             {
-                clr->b = (color & 0x31u) / 31.0f;
-                clr->g = ((color & (0x31u<<5))>>5u) / 31.0f;
-                clr->r = ((color & (0x31u<<10))>>10u) / 31.0f;
+                clr->b = (color & 0x1Fu) / 31.0f;
+                clr->g = ((color & (0x1Fu << 5)) >> 5u) / 31.0f;
+                clr->r = ((color & (0x1Fu << 10)) >> 10u) / 31.0f;
             }
             // assign the color to all vertices of the face
             *(clr+1) = *clr;
