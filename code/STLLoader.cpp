@@ -404,26 +404,47 @@ bool STLImporter::LoadBinaryFile()
     if (fileSize < 84) {
         throw DeadlyImportError("STL: file is too small for the header");
     }
+
     bool bIsMaterialise = false;
 
     // search for an occurence of "COLOR=" in the header
-    const unsigned char* sz2 = (const unsigned char*)mBuffer;
-    const unsigned char* const szEnd = sz2+80;
-    while (sz2 < szEnd) {
+    bool bHasColorLabel = false;
+    const unsigned char* sLabelColor = (const unsigned char*)mBuffer;
+    const unsigned char* const sLabelColorEnd = sLabelColor +80;
+    while (sLabelColor < sLabelColorEnd) {
 
-        if ('C' == *sz2++ && 'O' == *sz2++ && 'L' == *sz2++ &&
-            'O' == *sz2++ && 'R' == *sz2++ && '=' == *sz2++)    {
+        if ('C' == *sLabelColor++ && 'O' == *sLabelColor++ && 'L' == *sLabelColor++ &&
+            'O' == *sLabelColor++ && 'R' == *sLabelColor++ && '=' == *sLabelColor++)    {
 
             // read the default vertex color for facets
-            bIsMaterialise = true;
-            DefaultLogger::get()->info("STL: Taking code path for Materialise files");
-            clrColorDefault.r = (*sz2++) / 255.0f;
-            clrColorDefault.g = (*sz2++) / 255.0f;
-            clrColorDefault.b = (*sz2++) / 255.0f;
-            clrColorDefault.a = (*sz2++) / 255.0f;
+            bHasColorLabel = true;
+            clrColorDefault.r = (*sLabelColor++) / 255.0f;
+            clrColorDefault.g = (*sLabelColor++) / 255.0f;
+            clrColorDefault.b = (*sLabelColor++) / 255.0f;
+            clrColorDefault.a = (*sLabelColor++) / 255.0f;
             break;
         }
     }
+
+    // search for an occurence of "MATERIAL=" in the header
+    if (bHasColorLabel)
+    {
+       const unsigned char* sLabelMaterial = (const unsigned char*)mBuffer;
+       const unsigned char* const sLabelMaterialEnd = sLabelMaterial + 80;
+       while (sLabelMaterial < sLabelMaterialEnd) {
+
+          if ('M' == *sLabelMaterial++ && 'A' == *sLabelMaterial++ && 'T' == *sLabelMaterial++
+             &&   'E' == *sLabelMaterial++ && 'R' == *sLabelMaterial++ && 'I' == *sLabelMaterial++
+             &&   'A' == *sLabelMaterial++ && 'L' == *sLabelMaterial++ && '=' == *sLabelMaterial++) {
+
+             //set as real magic materialise, ie presence of COLOR= and MATERIAL=
+             bIsMaterialise = true;
+             DefaultLogger::get()->info("STL: Taking code path for Materialise files");
+             break;
+          }
+       }
+    }
+
     const unsigned char* sz = (const unsigned char*)mBuffer + 80;
 
     // now read the number of facets
@@ -482,18 +503,20 @@ bool STLImporter::LoadBinaryFile()
             }
             aiColor4D* clr = &pMesh->mColors[0][i*3];
             clr->a = 1.0f;
-            if (bIsMaterialise) // this is reversed
+            //color channels are from 0 to 31 (5bits)
+            unsigned short r = color % 32 * 8;
+            unsigned short g = ((color / 32) % 32) * 8;
+            unsigned short b = ((color / 1024) % 32) * 8;
+            if (!bIsMaterialise) // this is reversed
             {
-                clr->r = (color & 0x1Fu) / 31.0f;
-                clr->g = ((color & (0x1Fu << 5)) >> 5u) / 31.0f;
-                clr->b = ((color & (0x1Fu << 10)) >> 10u) / 31.0f;
+               b = color % 32 * 8;
+               g = ((color / 32) % 32) * 8;
+               r = ((color / 1024) % 32) * 8;
             }
-            else
-            {
-                clr->b = (color & 0x1Fu) / 31.0f;
-                clr->g = ((color & (0x1Fu << 5)) >> 5u) / 31.0f;
-                clr->r = ((color & (0x1Fu << 10)) >> 10u) / 31.0f;
-            }
+            clr->r = r / 255.0f;
+            clr->g = g / 255.0f;
+            clr->b = b / 255.0f;
+
             // assign the color to all vertices of the face
             *(clr+1) = *clr;
             *(clr+2) = *clr;
