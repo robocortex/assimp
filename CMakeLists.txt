@@ -2,7 +2,7 @@ set(CMAKE_LEGACY_CYGWIN_WIN32 0) # Remove when CMake >= 2.8.4 is required
 cmake_minimum_required( VERSION 2.8 )
 PROJECT( Assimp )
 
-option(BUILD_SHARED_LIBS "Build package with shared libraries." ON)
+option(BUILD_SHARED_LIBS "Build package with shared libraries." OFF)
 if(NOT BUILD_SHARED_LIBS)
   #set(CMAKE_EXE_LINKER_FLAGS "-static")
   set(LINK_SEARCH_START_STATIC TRUE)
@@ -147,7 +147,7 @@ FIND_PACKAGE( DirectX )
 
 option ( ASSIMP_NO_EXPORT
   "Disable Assimp's export functionality."
-  OFF
+  ON
 )
 
 if( CMAKE_COMPILER_IS_GNUCXX )
@@ -251,7 +251,7 @@ ENDIF (ASSIMP_BUILD_NONFREE_C4D_IMPORTER)
 ADD_SUBDIRECTORY( code/ )
 option ( ASSIMP_BUILD_ASSIMP_TOOLS
   "If the supplementary tools for Assimp are built in addition to the library."
-  ON
+  OFF
 )
 IF ( ASSIMP_BUILD_ASSIMP_TOOLS )
   IF ( WIN32 AND DirectX_FOUND )
@@ -274,7 +274,7 @@ ENDIF ( ASSIMP_BUILD_SAMPLES )
 
 option ( ASSIMP_BUILD_TESTS
   "If the test suite for Assimp is built in addition to the library."
-  ON
+  OFF
 )
 
 IF ( ASSIMP_BUILD_TESTS )
@@ -284,7 +284,7 @@ ENDIF ( ASSIMP_BUILD_TESTS )
 IF(MSVC)
   option ( ASSIMP_INSTALL_PDB
     "Install MSVC debug files."
-    ON
+    OFF
   )
 ENDIF(MSVC)
 
