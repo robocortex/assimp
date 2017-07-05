@@ -39,7 +39,7 @@ SET(CMAKE_LEGACY_CYGWIN_WIN32 0) # Remove when CMake >= 2.8.4 is required
 cmake_minimum_required( VERSION 2.8 )
 PROJECT( Assimp )
 
-OPTION(BUILD_SHARED_LIBS "Build package with shared libraries." ON)
+OPTION(BUILD_SHARED_LIBS "Build package with shared libraries." OFF)
 IF(NOT BUILD_SHARED_LIBS)
   SET(LINK_SEARCH_START_STATIC TRUE)
 ENDIF(NOT BUILD_SHARED_LIBS)
@@ -165,10 +165,7 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/assimp-config.cmake"             "${C
 
 FIND_PACKAGE( DirectX )
 
-OPTION ( ASSIMP_NO_EXPORT
-  "Disable Assimp's export functionality."
-  OFF
-)
+OPTION ( ASSIMP_NO_EXPORT  "Disable Assimp's export functionality."  ON )
 
 IF( CMAKE_COMPILER_IS_GNUCXX )
   SET(LIBSTDC++_LIBRARIES -lstdc++)
@@ -176,13 +173,10 @@ ENDIF( CMAKE_COMPILER_IS_GNUCXX )
 
 # Search for external dependencies, and build them from source if not found
 # Search for zlib
-OPTION(ASSIMP_BUILD_ZLIB
-    "Build your own zlib"
-    OFF
-)
+OPTION(ASSIMP_BUILD_ZLIB    "Build your own zlib"    OFF)
 
 IF ( NOT ASSIMP_BUILD_ZLIB )
-    find_package(ZLIB)
+   find_package(ZLIB)
 ENDIF( NOT ASSIMP_BUILD_ZLIB )
 
 IF( NOT ZLIB_FOUND )
@@ -278,10 +272,7 @@ ENDIF (ASSIMP_BUILD_NONFREE_C4D_IMPORTER)
 
 
 ADD_SUBDIRECTORY( code/ )
-option ( ASSIMP_BUILD_ASSIMP_TOOLS
-  "If the supplementary tools for Assimp are built in addition to the library."
-  ON
-)
+option ( ASSIMP_BUILD_ASSIMP_TOOLS  "If the supplementary tools for Assimp are built in addition to the library."  OFF )
 IF ( ASSIMP_BUILD_ASSIMP_TOOLS )
   IF ( WIN32 )
     option ( ASSIMP_BUILD_ASSIMP_VIEW "If the Assimp view tool is built. (requires DirectX)" ${DirectX_FOUND} )
@@ -305,20 +296,14 @@ IF ( ASSIMP_BUILD_SAMPLES)
   ADD_SUBDIRECTORY( samples/SimpleOpenGL/ )
 ENDIF ( ASSIMP_BUILD_SAMPLES )
 
-OPTION ( ASSIMP_BUILD_TESTS
-  "If the test suite for Assimp is built in addition to the library."
-  ON
-)
+OPTION ( ASSIMP_BUILD_TESTS  "If the test suite for Assimp is built in addition to the library."  OFF )
 
 IF ( ASSIMP_BUILD_TESTS )
   ADD_SUBDIRECTORY( test/ )
 ENDIF ( ASSIMP_BUILD_TESTS )
 
 IF(MSVC)
-  OPTION ( ASSIMP_INSTALL_PDB
-    "Install MSVC debug files."
-    ON
-  )
+  OPTION ( ASSIMP_INSTALL_PDB    "Install MSVC debug files."    OFF  )
 ENDIF(MSVC)
 
 # Generate a pkg-config .pc for the Assimp library.
