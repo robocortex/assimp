@@ -78,19 +78,39 @@ void GetPostProcessingStepInstanceList(std::vector< BaseProcess* >& out);
 // ------------------------------------------------------------------------------------------------
 // Exporter worker function prototypes. Should not be necessary to #ifndef them, it's just a prototype
 // do not use const, because some exporter need to convert the scene temporary
+#ifndef ASSIMP_BUILD_NO_COLLADA_EXPORTER
 void ExportSceneCollada(const char*,IOSystem*, const aiScene*, const ExportProperties*);
+#endif
+#ifndef ASSIMP_BUILD_NO_X_EXPORTER
 void ExportSceneXFile(const char*,IOSystem*, const aiScene*, const ExportProperties*);
+#endif
+#ifndef ASSIMP_BUILD_NO_STEP_EXPORTER
 void ExportSceneStep(const char*,IOSystem*, const aiScene*, const ExportProperties*);
+#endif
+#ifndef ASSIMP_BUILD_NO_OBJ_EXPORTER
 void ExportSceneObj(const char*,IOSystem*, const aiScene*, const ExportProperties*);
+#endif
+#ifndef ASSIMP_BUILD_NO_STL_EXPORTER
 void ExportSceneSTL(const char*,IOSystem*, const aiScene*, const ExportProperties*);
-void ExportSceneSTLBinary(const char*,IOSystem*, const aiScene*, const ExportProperties*);
+void ExportSceneSTLBinary(const char*, IOSystem*, const aiScene*, const ExportProperties*);
+#endif
+#ifndef ASSIMP_BUILD_NO_PLY_EXPORTER
 void ExportScenePly(const char*,IOSystem*, const aiScene*, const ExportProperties*);
 void ExportScenePlyBinary(const char*, IOSystem*, const aiScene*, const ExportProperties*);
+#endif
+#ifndef ASSIMP_BUILD_NO_3DS_EXPORTER
 void ExportScene3DS(const char*, IOSystem*, const aiScene*, const ExportProperties*);
+#endif
+#ifndef ASSIMP_BUILD_NO_GLTF_EXPORTER
 void ExportSceneGLTF(const char*, IOSystem*, const aiScene*, const ExportProperties*);
 void ExportSceneGLB(const char*, IOSystem*, const aiScene*, const ExportProperties*);
+#endif
+#ifndef ASSIMP_BUILD_NO_ASSBIN_EXPORTER
 void ExportSceneAssbin(const char*, IOSystem*, const aiScene*, const ExportProperties*);
+#endif
+#ifndef ASSIMP_BUILD_NO_ASSXML_EXPORTER
 void ExportSceneAssxml(const char*, IOSystem*, const aiScene*, const ExportProperties*);
+#endif
 
 // ------------------------------------------------------------------------------------------------
 // global array of all export formats which Assimp supports in its current build
@@ -100,7 +120,7 @@ Exporter::ExportFormatEntry gExporters[] =
     Exporter::ExportFormatEntry( "collada", "COLLADA - Digital Asset Exchange Schema", "dae", &ExportSceneCollada),
 #endif
 
-#ifndef ASSIMP_BUILD_NO_XFILE_EXPORTER
+#ifndef ASSIMP_BUILD_NO_X_EXPORTER
     Exporter::ExportFormatEntry( "x", "X Files", "x", &ExportSceneXFile,
         aiProcess_MakeLeftHanded | aiProcess_FlipWindingOrder | aiProcess_FlipUVs),
 #endif
